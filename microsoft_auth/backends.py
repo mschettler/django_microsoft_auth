@@ -178,6 +178,11 @@ class MicrosoftAuthenticationBackend(ModelBackend):
             #     )
             #     user.save()
 
+            # we still need the user object, though. ensure it is active.
+            user = User.objects.get(
+                is_active=True, username__iexact=data["email"]
+            )
+
             existing_account = self._get_existing_microsoft_account(user)
             if existing_account is not None:
                 if self.config.MICROSOFT_AUTH_AUTO_REPLACE_ACCOUNTS:
@@ -189,7 +194,7 @@ class MicrosoftAuthenticationBackend(ModelBackend):
                             "User {} already has linked Microsoft "
                             "account and MICROSOFT_AUTH_AUTO_REPLACE_ACCOUNTS "
                             "is False"
-                        ).format(user.email)
+                        ).format(user.username)
                     )
                     return None
 
