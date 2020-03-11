@@ -1,4 +1,6 @@
 import logging
+import json
+import time
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
@@ -152,36 +154,24 @@ class MicrosoftAuthenticationBackend(ModelBackend):
         user = microsoft_user.user
 
         if user is None:
-            # this garbage code seems to be updating first and last name
-            # note: email is not unique and cannot be used for .get()
-            # im disabling all of this -ms
 
-            # fullname = data.get("name")
-            # first_name, last_name = "", ""
-            # if fullname is not None:
-            #     first_name, last_name = data["name"].split(" ", 1)
+            # obtain user object
+            try:
+                user = User.objects.get(
+                    is_active=True, username__iexact=data["preferred_username"]
+                )
+            except User.DoesNotExist:
+                # this is not a valid user, attempt to write to a log file
+                try:
+                    with open("/tmp/user_auth.log", "a") as fh:
+                        fh.write(
+                            "[{}] {}\n".format(time.time(), json.dumps(data))
+                        )
+                except:
+                    pass
 
-            # try:
-            #     # create new Django user from provided data
-            #     user = User.objects.get(email=data["email"])
-
-            #     if user.first_name == "" and user.last_name == "":
-            #         user.first_name = first_name
-            #         user.last_name = last_name
-            #         user.save()
-            # except User.DoesNotExist:
-            #     user = User(
-            #         username=data["preferred_username"][:150],
-            #         first_name=first_name,
-            #         last_name=last_name,
-            #         email=data["email"],
-            #     )
-            #     user.save()
-
-            # we still need the user object, though. ensure it is active.
-            user = User.objects.get(
-                is_active=True, username__iexact=data["email"]
-            )
+                # FIXME should probably create the user?
+                return None
 
             existing_account = self._get_existing_microsoft_account(user)
             if existing_account is not None:
