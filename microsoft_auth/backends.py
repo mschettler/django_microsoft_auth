@@ -152,27 +152,31 @@ class MicrosoftAuthenticationBackend(ModelBackend):
         user = microsoft_user.user
 
         if user is None:
-            fullname = data.get("name")
-            first_name, last_name = "", ""
-            if fullname is not None:
-                first_name, last_name = data["name"].split(" ", 1)
+            # this garbage code seems to be updating first and last name
+            # note: email is not unique and cannot be used for .get()
+            # im disabling all of this -ms
 
-            try:
-                # create new Django user from provided data
-                user = User.objects.get(email=data["email"])
+            # fullname = data.get("name")
+            # first_name, last_name = "", ""
+            # if fullname is not None:
+            #     first_name, last_name = data["name"].split(" ", 1)
 
-                if user.first_name == "" and user.last_name == "":
-                    user.first_name = first_name
-                    user.last_name = last_name
-                    user.save()
-            except User.DoesNotExist:
-                user = User(
-                    username=data["preferred_username"][:150],
-                    first_name=first_name,
-                    last_name=last_name,
-                    email=data["email"],
-                )
-                user.save()
+            # try:
+            #     # create new Django user from provided data
+            #     user = User.objects.get(email=data["email"])
+
+            #     if user.first_name == "" and user.last_name == "":
+            #         user.first_name = first_name
+            #         user.last_name = last_name
+            #         user.save()
+            # except User.DoesNotExist:
+            #     user = User(
+            #         username=data["preferred_username"][:150],
+            #         first_name=first_name,
+            #         last_name=last_name,
+            #         email=data["email"],
+            #     )
+            #     user.save()
 
             existing_account = self._get_existing_microsoft_account(user)
             if existing_account is not None:
