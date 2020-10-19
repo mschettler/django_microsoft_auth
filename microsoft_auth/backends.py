@@ -159,7 +159,7 @@ class MicrosoftAuthenticationBackend(ModelBackend):
 
         all_group_objects = []
         for group_name in groups:
-            group_obj = Group.objects.get_or_create(name=group_name)
+            group_obj, _created = Group.objects.get_or_create(name=group_name)
             all_group_objects.append(group_obj.id)
 
         if all_group_objects:
