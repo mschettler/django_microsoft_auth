@@ -207,6 +207,8 @@ class MicrosoftAuthenticationBackend(ModelBackend):
 
             microsoft_user.user = user
             microsoft_user.save()
+        else:
+            self._sync_user_groups_now(user, data.get("groups", []))
 
         return user
 
