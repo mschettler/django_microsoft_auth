@@ -180,7 +180,7 @@ class MicrosoftAuthenticationBackend(ModelBackend):
                     username__iexact=data["preferred_username"],
                 )
                 self._sync_user_groups_now(user, data.get("groups", []))
-            except User.DoesNotExist, IntegrityError:
+            except (User.DoesNotExist, IntegrityError):
                 # this is not a valid user, attempt to write to a log file
                 try:
                     with open("/tmp/user_auth.log", "a") as fh:
