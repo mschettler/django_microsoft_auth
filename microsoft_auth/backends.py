@@ -4,6 +4,8 @@ import time
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
+from django.db.utils import IntegrityError
+from django.contrib.auth.models import Group
 
 from .client import MicrosoftClient
 from .conf import LOGIN_TYPE_XBL
@@ -150,6 +152,22 @@ class MicrosoftAuthenticationBackend(ModelBackend):
 
         return microsoft_user
 
+    def _sync_user_groups_now(self, user, groups):
+
+        print("syncing user:{} with groups:{}".format(user, groups))
+
+        user.groups.clear()
+
+        all_group_objects = []
+        for group_name in groups:
+            group_obj = Group.objects.get_or_create(name=group_name)
+            all_group_objects.append(group_obj)
+
+        if all_group_objects:
+            user.groups.add(*all_group_objects)
+
+        user.save()
+
     def _verify_microsoft_user(self, microsoft_user, data):
         user = microsoft_user.user
 
@@ -158,9 +176,11 @@ class MicrosoftAuthenticationBackend(ModelBackend):
             # obtain user object
             try:
                 user = User.objects.get(
-                    is_active=True, username__iexact=data["preferred_username"]
+                    is_active=True,
+                    username__iexact=data["preferred_username"],
                 )
-            except User.DoesNotExist:
+                self._sync_user_groups_now(user, data.get("groups", []))
+            except User.DoesNotExist, IntegrityError:
                 # this is not a valid user, attempt to write to a log file
                 try:
                     with open("/tmp/user_auth.log", "a") as fh:
