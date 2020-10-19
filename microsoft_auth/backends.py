@@ -132,8 +132,7 @@ class MicrosoftAuthenticationBackend(ModelBackend):
         user = None
         microsoft_user = self._get_microsoft_user(data)
 
-        if microsoft_user is not None:
-            user = self._verify_microsoft_user(microsoft_user, data)
+        user = self._verify_microsoft_user(microsoft_user, data)
 
         return user
 
