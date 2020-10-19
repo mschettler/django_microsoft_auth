@@ -59,8 +59,8 @@ class ConfTests(TransactionTestCase):
         MICROSOFT_AUTH_CONFIG_CLASS="tests.test_conf.no_default_test_conf"
     )
     def test_custom_config_class_with_no_default(self):
-        """ Tests MICROSOFT_AUTH_CONFIG_CLASS set to another class with no
-            add_default_config option """
+        """Tests MICROSOFT_AUTH_CONFIG_CLASS set to another class with no
+        add_default_config option"""
         from microsoft_auth.conf import config
 
         self.assertTrue(isinstance(config, SimpleTestNoDefaultConfig))

@@ -21,15 +21,15 @@ logger = logging.getLogger("django")
 
 
 class MicrosoftClient(OAuth2Session):
-    """ Simple Microsoft OAuth2 Client to authenticate them
+    """Simple Microsoft OAuth2 Client to authenticate them
 
-        Extended from Requests-OAuthlib's OAuth2Session class which
-            does most of the heavy lifting
+    Extended from Requests-OAuthlib's OAuth2Session class which
+        does most of the heavy lifting
 
-        https://requests-oauthlib.readthedocs.io/en/latest/
+    https://requests-oauthlib.readthedocs.io/en/latest/
 
-        Microsoft OAuth documentation can be found at
-        https://developer.microsoft.com/en-us/graph/docs/get-started/rest
+    Microsoft OAuth documentation can be found at
+    https://developer.microsoft.com/en-us/graph/docs/get-started/rest
     """
 
     _config_url = "https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration"  # noqa
@@ -173,21 +173,21 @@ class MicrosoftClient(OAuth2Session):
         )
 
     def fetch_xbox_token(self):
-        """ Fetches Xbox Live Auth token.
+        """Fetches Xbox Live Auth token.
 
-            token must contain a valid access_token
-                - retrieved from fetch_token
+        token must contain a valid access_token
+            - retrieved from fetch_token
 
-            Reversed engineered from existing Github repos,
-                no "official" API docs from Microsoft
+        Reversed engineered from existing Github repos,
+            no "official" API docs from Microsoft
 
-            Response will be similar to
-            {
-                'Token': 'token',
-                'IssueInstant': '2016-09-27T15:01:45.225637Z',
-                'DisplayClaims': {'xui': [{'uhs': '###################'}]},
-                'NotAfter': '2016-10-11T15:01:45.225637Z'
-            }
+        Response will be similar to
+        {
+            'Token': 'token',
+            'IssueInstant': '2016-09-27T15:01:45.225637Z',
+            'DisplayClaims': {'xui': [{'uhs': '###################'}]},
+            'NotAfter': '2016-10-11T15:01:45.225637Z'
+        }
         """
 
         # Content-type MUST be json for Xbox Live
@@ -215,28 +215,28 @@ class MicrosoftClient(OAuth2Session):
 
     def get_xbox_profile(self):
         """
-            Fetches the Xbox Live user profile from Xbox servers
+        Fetches the Xbox Live user profile from Xbox servers
 
-            xbox_token must contain a valid Xbox Live token
-                - retrieved from fetch_xbox_token
+        xbox_token must contain a valid Xbox Live token
+            - retrieved from fetch_xbox_token
 
-            Reversed engineered from existing Github repos,
-                no "official" API docs from Microsoft
+        Reversed engineered from existing Github repos,
+            no "official" API docs from Microsoft
 
-            Response will be similar to
-            {
-                'NotAfter': '2016-09-28T07:19:21.9608601Z',
-                'DisplayClaims': {
-                    'xui': [
-                        {
-                            'agg': 'Adult',
-                            'uhs': '###################',
-                            'usr': '###',
-                            'xid': '################',
-                            'prv': '### ### ###...',
-                            'gtg': 'Gamertag'}]},
-                'IssueInstant': '2016-09-27T15:19:21.9608601Z',
-                'Token': 'token'}
+        Response will be similar to
+        {
+            'NotAfter': '2016-09-28T07:19:21.9608601Z',
+            'DisplayClaims': {
+                'xui': [
+                    {
+                        'agg': 'Adult',
+                        'uhs': '###################',
+                        'usr': '###',
+                        'xid': '################',
+                        'prv': '### ### ###...',
+                        'gtg': 'Gamertag'}]},
+            'IssueInstant': '2016-09-27T15:19:21.9608601Z',
+            'Token': 'token'}
         """
 
         if "Token" in self.xbox_token:

@@ -19,11 +19,11 @@ logger = logging.getLogger("django")
 
 
 class AuthenticateCallbackView(View):
-    """ Authentication callback for Microsoft to call as part of OAuth2
-            implicit grant flow
+    """Authentication callback for Microsoft to call as part of OAuth2
+        implicit grant flow
 
-        For more details:
-        https://developer.microsoft.com/en-us/graph/docs/get-started/rest
+    For more details:
+    https://developer.microsoft.com/en-us/graph/docs/get-started/rest
     """
 
     messages = {
@@ -136,11 +136,11 @@ class AuthenticateCallbackView(View):
                     login(self.request, user)
 
     def post(self, request):
-        """ main callback for Microsoft to call
+        """main callback for Microsoft to call
 
-            validates Microsoft response, attempts to authenticate user and
-            returns simple HTML page with Javascript that will post a message
-            to parent window with details of result """
+        validates Microsoft response, attempts to authenticate user and
+        returns simple HTML page with Javascript that will post a message
+        to parent window with details of result"""
 
         context = self.get_context_data(**request.POST.dict())
 
